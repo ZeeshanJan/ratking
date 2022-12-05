@@ -1,17 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 import "hardhat/console.sol";
 
-import "./RatKing.sol";
+import "./RatKingSociety.sol";
 /// @custom:security-contact info@ratking.io
-contract FabNovel is ERC721, Pausable, Ownable, ReentrancyGuard {
+contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
@@ -27,7 +29,7 @@ contract FabNovel is ERC721, Pausable, Ownable, ReentrancyGuard {
     event WithdrawBalance(uint256 balance);
     event WithdrawERC20(uint256 balance);
 
-    RatKing RK;
+    RatKingSociety RK;
     address ratKingAddress;
 
     constructor() ERC721("FabNovel", "FabNovel") {
@@ -43,7 +45,7 @@ contract FabNovel is ERC721, Pausable, Ownable, ReentrancyGuard {
 
     function setRatKingAddress(address ratAdd) public onlyOwner {
         ratKingAddress = ratAdd;
-        RK = RatKing(ratKingAddress);
+        RK = RatKingSociety(ratKingAddress);
     }
 
     function checkRatMinter(address ratMinter) public view returns (bool){ //temp
@@ -74,10 +76,34 @@ contract FabNovel is ERC721, Pausable, Ownable, ReentrancyGuard {
         _safeMint(to, tokenId);
     }
 
+    function setApprovalForAll(address operator, bool approved) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
+        super.setApprovalForAll(operator, approved);
+    }
+
+    function approve(address operator, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
+        super.approve(operator, tokenId);
+    }
+
+    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
+        super.transferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data)
+        public
+        override(ERC721, IERC721)
+        onlyAllowedOperator(from)
+    {
+        super.safeTransferFrom(from, to, tokenId, data);
+    }
+
     function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
         internal
         whenNotPaused
-        override(ERC721)
+        override(ERC721, ERC721Enumerable)
     {
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
@@ -87,7 +113,7 @@ contract FabNovel is ERC721, Pausable, Ownable, ReentrancyGuard {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721) 
+        override(ERC721, ERC721Enumerable) 
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
