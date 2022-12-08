@@ -14,5 +14,7 @@ library Errors {
     error MaximumGiftSupplyLimitReached();
     
     // Free Content NFTs
-    
+    error RatKingHasAlreadyMintedFreeNFT();
+    error AlreadyMintedFreeNFT();
+    error NotYourRatKing();
 }

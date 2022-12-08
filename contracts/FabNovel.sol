@@ -9,85 +9,138 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
-import "hardhat/console.sol";
+import { Errors } from './Errors.sol';
 
 import "./RatKingSociety.sol";
+
+/**
+* @title FabNovel (Free Content by RatKingSociety)
+* @author Zeeshan Jan
+* @notice This contract manages the FabNovel NFTs.
+*/
+
 /// @custom:security-contact info@ratking.io
 contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
     using Counters for Counters.Counter;
 
+    /// Counter for Tokens
     Counters.Counter private _tokenIdCounter;
     
-    mapping(address => bool) fabMinterList;
+    /// Mappings for RatKing NFTs to trace which RatKing ID has been used to mint FabNovel NFT.
+    mapping(uint256 => bool) ratKingMinterList;
 
-    uint256 maxFabNovels = 100; // hard cap
+    /// Maximum Supply of Fab Novel NFTs
+    uint256 MAX_FAB_NOVEL_SUPPLY = 100; 
 
-    // Base URI
+    // Base URI (IPFS) for Fab Novel NFTs
     string private _baseURIextended;
 
-    
+    event FabNovelMinted();
     event WithdrawBalance(uint256 balance);
     event WithdrawERC20(uint256 balance);
 
+    /// Reference instance of the RatKingSociety Smart Contract
     RatKingSociety RK;
+
+    /// Address of the RatKingSociety Smart Contract
     address ratKingAddress;
 
     constructor() ERC721("FabNovel", "FabNovel") {
     }
 
+    /**
+    * @notice Sets the (IPFS) URL of FabNovel NFTs
+    * @param baseURI_ is the (IPFS) URL for FabNovel NFTs
+    */
     function setBaseURI(string memory baseURI_) external onlyOwner() {
         _baseURIextended = baseURI_;
     }
 
+    /**
+    * @notice Gets the (IPFS) URI of FabNovel NFTs
+    */
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseURIextended;
     }
 
+    /**
+    * @notice Sets the address of the RatKingSociety Smart Contract
+    * @param ratAdd is the address of RatKingSociety Smart Contract
+    */
     function setRatKingAddress(address ratAdd) public onlyOwner {
         ratKingAddress = ratAdd;
         RK = RatKingSociety(ratKingAddress);
     }
 
-    function checkRatMinter(address ratMinter) public view returns (bool){ //temp
-        return RK.minterList(ratMinter);
-    }
-
+    /**
+    * @notice Pauses the Smart Contract
+    */
     function pause() public onlyOwner {
         _pause();
     }
 
+    /**
+    * @notice Resumes the Smart Contract
+    */
     function unpause() public onlyOwner {
         _unpause();
     }
 
-    function mintFabNovel() public {
-        require(fabMinterList[msg.sender] == false, "Already minted");
-        require(_tokenIdCounter.current() < maxFabNovels, "Public Mint Limit reached" );
-        require(RK.minterList(msg.sender) == true, "You are not RatKing Minter");
-        safeMint(msg.sender);
-        fabMinterList[msg.sender] = true;
+    /**
+    * @notice Minting of the FabNovel NFTs
+    * @param ratKing is the ID of RatKingSociety NFT.
+    * The function checks if the msg.sender owns that RatKing, and if that RatKing has already been used to mint FabNovel NFT.
+    */
+    function mintFabNovel(uint256 ratKing) public {
+        if(_tokenIdCounter.current() >= MAX_FAB_NOVEL_SUPPLY) revert Errors.MaximumPublicSupplyLimitReached();
 
+        if(ratKingMinterList[ratKing] == true) revert Errors.RatKingHasAlreadyMintedFreeNFT();
+
+        if(RK.ownerOf(ratKing) != msg.sender) revert Errors.NotYourRatKing();
+
+        safeMint(msg.sender);
+        ratKingMinterList[ratKing] == true;
     }
 
+    /**
+    * @notice Checks if a RatKing ID has been used to mint FabNovel
+    * @param ratKing is the ID of RatKing
+    */
+    function checkFabMinted(uint256 ratKing) public view returns (bool) {
+        return ratKingMinterList[ratKing];
+    }
 
     function safeMint(address to) private {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
+        emit FabNovelMinted();
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function setApprovalForAll(address operator, bool approved) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
         super.setApprovalForAll(operator, approved);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function approve(address operator, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
         super.approve(operator, tokenId);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
         super.transferFrom(from, to, tokenId);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function safeTransferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
         super.safeTransferFrom(from, to, tokenId);
     }

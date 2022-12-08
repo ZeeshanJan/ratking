@@ -11,8 +11,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 import { Errors } from './Errors.sol';
 
-import "hardhat/console.sol"; // For testing purposes
-
 /**
 * @title RatKingSociety (InfinityPass)
 * @author Zeeshan Jan
@@ -48,6 +46,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     // Base URI of RatKing NFTs
     string private _baseURIextended;
 
+    event RatKingMinted();
+    event RatKingGifted();
     event WithdrawBalance(uint256 balance);
     event WithdrawERC20(uint256 balance);
 
@@ -56,8 +56,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     }
 
     /**
-    * @notice Sets the (IPFS) URL of RatKing NFTs
-    * @param baseURI_ is the (IPFS) URL for RatKing NFTs
+    * @notice Sets the (IPFS) URI of RatKing NFTs
+    * @param baseURI_ is the (IPFS) URI for RatKing NFTs
     */
     function setBaseURI(string memory baseURI_) external onlyOwner() {
         _baseURIextended = baseURI_;
@@ -96,6 +96,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
         minterList[msg.sender] = true;
         _publicMintCounter.increment();
 
+        emit RatKingMinted();
+
     }
 
     /**
@@ -111,6 +113,7 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
             minterList[to[i]] = true;
             _giftCounter.increment();
         }
+        emit RatKingGifted();
     }
 
 
