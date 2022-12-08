@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
+import { Errors } from './Errors.sol';
+
 import "hardhat/console.sol"; // For testing purposes
 
 /**
@@ -86,8 +88,10 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     * @notice Minting of the RatKing NFTs
     */
     function mintRatKing() public {
-        require(minterList[msg.sender] == false, "Already minted");
-        require(_publicMintCounter.current() < MAX_PUBLIC_SUPPLY, "Public Mint Limit reached" );
+        //require(minterList[msg.sender] == false, Errors.RatKingAlreadyMinted());
+        if (minterList[msg.sender] == true) revert Errors.RatKingAlreadyMinted();
+        //require(_publicMintCounter.current() < MAX_PUBLIC_SUPPLY, "Public Mint Limit reached" );
+        if (_publicMintCounter.current() >= MAX_PUBLIC_SUPPLY) revert Errors.MaximumPublicSupplyLimitReached();
         safeMint(msg.sender);
         minterList[msg.sender] = true;
         _publicMintCounter.increment();
@@ -100,7 +104,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     */
     function giftRatKing(address[] memory to) public onlyOwner {
 
-        require(to.length + _giftCounter.current() <= MAX_GIFT_SUPPLY, "Limit reached.");
+        //require(to.length + _giftCounter.current() <= MAX_GIFT_SUPPLY, "Limit reached.");
+        if (to.length + _giftCounter.current() >= MAX_GIFT_SUPPLY) revert Errors.MaximumGiftSupplyLimitReached();
         for(uint i=0; i<to.length; i++) {
             safeMint(to[i]);
             minterList[to[i]] = true;
