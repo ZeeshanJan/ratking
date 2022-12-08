@@ -11,24 +11,39 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 import "hardhat/console.sol"; // For testing purposes
 
+/**
+* @title RatKingSociety (InfinityPass)
+* @author Zeeshan Jan
+* @notice This contract manages the RatKing NFTs.
+*/
 
 /// @custom:security-contact info@ratking.io
 contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
     using Counters for Counters.Counter;
 
+    /// Counter for Tokens
     Counters.Counter private _tokenIdCounter;
+
+    ///Counter for public minted tokens
     Counters.Counter private _publicMintCounter;
+
+    ///Counter for tokens gifted by the owner
     Counters.Counter private _giftCounter;
 
     mapping(address => bool) public minterList;
 
     uint256 MAX_SUPPLY = 275; // hard cap
-    uint256 maxPublicMint = 250;
-    uint256 maxGifts = 25; 
+    
+    /// Public mint supply (maximum)
+    uint256 MAX_PUBLIC_SUPPLY = 250;
 
+    /// Gift supply (maximum)
+    uint256 MAX_GIFT_SUPPLY = 25; 
+
+    /// An array for free content NFTs provided by RatKingSociety
     address[] listContentNFT;
 
-    // Base URI
+    // Base URI of RatKing NFTs
     string private _baseURIextended;
 
     event WithdrawBalance(uint256 balance);
@@ -38,43 +53,59 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
 
     }
 
-
+    /**
+    * @notice Sets the (IPFS) URL of RatKing NFTs
+    * @param baseURI_ is the (IPFS) URL for RatKing NFTs
+    */
     function setBaseURI(string memory baseURI_) external onlyOwner() {
         _baseURIextended = baseURI_;
     }
 
+    /**
+    * @notice Gets the (IPFS) URL of RatKing NFTs
+    */
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseURIextended;
     }
 
+    /**
+    * @notice Pauses the Smart Contract
+    */
     function pause() public onlyOwner {
         _pause();
     }
 
+    /**
+    * @notice Resumes the Smart Contract
+    */
     function unpause() public onlyOwner {
         _unpause();
     }
 
+    /**
+    * @notice Minting of the RatKing NFTs
+    */
     function mintRatKing() public {
         require(minterList[msg.sender] == false, "Already minted");
-        require(_publicMintCounter.current() < maxPublicMint, "Public Mint Limit reached" );
+        require(_publicMintCounter.current() < MAX_PUBLIC_SUPPLY, "Public Mint Limit reached" );
         safeMint(msg.sender);
         minterList[msg.sender] = true;
         _publicMintCounter.increment();
 
     }
 
+    /**
+    * @notice Minting (airdropping) of the RatKing NFTs by the owner
+    * @param to is an array of address to be airdropped with RatKing NFTs
+    */
     function giftRatKing(address[] memory to) public onlyOwner {
 
-        require(to.length + _giftCounter.current() <= maxGifts, "Limit reached.");
-        console.log("Gift Counter (Before): ", _giftCounter.current());
-        console.log("Size of array: ", to.length);
+        require(to.length + _giftCounter.current() <= MAX_GIFT_SUPPLY, "Limit reached.");
         for(uint i=0; i<to.length; i++) {
             safeMint(to[i]);
             minterList[to[i]] = true;
             _giftCounter.increment();
         }
-        console.log("Gift Counter (After): ", _giftCounter.current());
     }
 
 
@@ -84,33 +115,54 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
         _safeMint(to, tokenId);
     }
 
+    /**
+    * @notice Adds the address of the free content NFTs provided by RatKingSociety
+    * @param contentNFT is an array of address of free content NFTs.
+    */
     function addContentNFT(address[] memory contentNFT) public onlyOwner {
         for(uint i=0; i<contentNFT.length; i++) {
             listContentNFT.push(contentNFT[i]);
         }
-        
     }
 
+    /**
+    * @notice Gets the array of addresses of the free content NFTs provided by RatKingSociety
+    */
     function getContentNFTList() public view returns (address[] memory) {
         return listContentNFT;
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function setApprovalForAll(address operator, bool approved) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
         super.setApprovalForAll(operator, approved);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function approve(address operator, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
         super.approve(operator, tokenId);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
         super.transferFrom(from, to, tokenId);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function safeTransferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) onlyAllowedOperator(from) {
         super.safeTransferFrom(from, to, tokenId);
     }
 
+    /**
+    * @notice Function required to override by DefaultOperatorFilterer
+    */
     function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data)
         public
         override(ERC721, IERC721)
