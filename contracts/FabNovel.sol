@@ -32,8 +32,11 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     /// Maximum Supply of Fab Novel NFTs
     uint256 MAX_FAB_NOVEL_SUPPLY = 100; 
 
-    // Base URI (IPFS) for Fab Novel NFTs
+    /// Base URI (IPFS) for Fab Novel NFTs
     string private _baseURIextended;
+
+    /// For Unlocked Content
+    string private lockedContent;
 
     event FabNovelMinted();
     event WithdrawBalance(uint256 balance);
@@ -115,6 +118,22 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         emit FabNovelMinted();
+    }
+
+    /**
+    * @notice Sets lockedContent's IPFS URI
+    * @param lockedContentURI is the ID of RatKing
+    */
+    function setLockedContent(string memory lockedContentURI) public onlyOwner {
+        lockedContent = lockedContentURI;
+    }
+
+    /**
+    * @notice Gets lockedContent's IPFS URI
+    */
+    function unlockContent() public view returns (string memory) {
+        if (balanceOf(msg.sender) < 1) revert Errors.NoFreeContentNFTOwned();
+        return lockedContent;
     }
 
     /**
