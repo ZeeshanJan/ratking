@@ -73,14 +73,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.FabNovel__factory>;
     getContractFactory(
-      name: "Lock",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Lock__factory>;
-    getContractFactory(
-      name: "RatKing",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.RatKing__factory>;
-    getContractFactory(
       name: "RatKingSociety",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.RatKingSociety__factory>;
@@ -172,16 +164,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.FabNovel>;
-    getContractAt(
-      name: "Lock",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Lock>;
-    getContractAt(
-      name: "RatKing",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.RatKing>;
     getContractAt(
       name: "RatKingSociety",
       address: string,

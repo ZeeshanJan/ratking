@@ -36,6 +36,7 @@ export interface FabNovelInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setBaseURI(string)": FunctionFragment;
+    "setLockedContent(string)": FunctionFragment;
     "setRatKingAddress(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
@@ -45,6 +46,7 @@ export interface FabNovelInterface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unlockContent()": FunctionFragment;
     "unpause()": FunctionFragment;
     "withdraw()": FunctionFragment;
     "withdrawERC20(address)": FunctionFragment;
@@ -97,6 +99,10 @@ export interface FabNovelInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
   encodeFunctionData(
+    functionFragment: "setLockedContent",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setRatKingAddress",
     values: [string]
   ): string;
@@ -128,6 +134,10 @@ export interface FabNovelInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "unlockContent",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
   encodeFunctionData(functionFragment: "withdraw", values?: undefined): string;
@@ -177,6 +187,10 @@ export interface FabNovelInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "setLockedContent",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "setRatKingAddress",
     data: BytesLike
   ): Result;
@@ -204,6 +218,10 @@ export interface FabNovelInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "unlockContent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
@@ -395,6 +413,11 @@ export interface FabNovel extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setLockedContent(
+      lockedContentURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     setRatKingAddress(
       ratAdd: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -436,6 +459,8 @@ export interface FabNovel extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    unlockContent(overrides?: CallOverrides): Promise<[string]>;
 
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -524,6 +549,11 @@ export interface FabNovel extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setLockedContent(
+    lockedContentURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   setRatKingAddress(
     ratAdd: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -562,6 +592,8 @@ export interface FabNovel extends BaseContract {
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  unlockContent(overrides?: CallOverrides): Promise<string>;
 
   unpause(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -643,6 +675,11 @@ export interface FabNovel extends BaseContract {
 
     setBaseURI(baseURI_: string, overrides?: CallOverrides): Promise<void>;
 
+    setLockedContent(
+      lockedContentURI: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     setRatKingAddress(ratAdd: string, overrides?: CallOverrides): Promise<void>;
 
     supportsInterface(
@@ -678,6 +715,8 @@ export interface FabNovel extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    unlockContent(overrides?: CallOverrides): Promise<string>;
 
     unpause(overrides?: CallOverrides): Promise<void>;
 
@@ -825,6 +864,11 @@ export interface FabNovel extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setLockedContent(
+      lockedContentURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     setRatKingAddress(
       ratAdd: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -866,6 +910,8 @@ export interface FabNovel extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    unlockContent(overrides?: CallOverrides): Promise<BigNumber>;
 
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -963,6 +1009,11 @@ export interface FabNovel extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setLockedContent(
+      lockedContentURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     setRatKingAddress(
       ratAdd: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1004,6 +1055,8 @@ export interface FabNovel extends BaseContract {
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    unlockContent(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     unpause(
       overrides?: Overrides & { from?: string | Promise<string> }
