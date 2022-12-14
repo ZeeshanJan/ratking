@@ -59,7 +59,6 @@ contract RatKing is ERC721, Pausable, Ownable, ReentrancyGuard {
         safeMint(msg.sender);
         minterList[msg.sender] = true;
         _publicMintCounter.increment();
-
     }
 
     function giftRatKing(address[] memory to) public onlyOwner {
