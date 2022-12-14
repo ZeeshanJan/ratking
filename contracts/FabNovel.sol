@@ -102,7 +102,7 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
         if(RK.ownerOf(ratKing) != msg.sender) revert Errors.NotYourRatKing();
 
         safeMint(msg.sender);
-        ratKingMinterList[ratKing] == true;
+        ratKingMinterList[ratKing] = true;
     }
 
     /**
