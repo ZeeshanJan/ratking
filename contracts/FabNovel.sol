@@ -32,8 +32,11 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     /// Maximum Supply of Fab Novel NFTs
     uint256 MAX_FAB_NOVEL_SUPPLY = 100; 
 
-    // Base URI (IPFS) for Fab Novel NFTs
+    /// Base URI (IPFS) for Fab Novel NFTs
     string private _baseURIextended;
+
+    /// For Unlocked Content
+    string private lockedContent;
 
     event FabNovelMinted();
     event WithdrawBalance(uint256 balance);
@@ -118,6 +121,22 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     }
 
     /**
+    * @notice Sets lockedContent's IPFS URI
+    * @param lockedContentURI is the ID of RatKing
+    */
+    function setLockedContent(string memory lockedContentURI) public onlyOwner {
+        lockedContent = lockedContentURI;
+    }
+
+    /**
+    * @notice Gets lockedContent's IPFS URI
+    */
+    function unlockContent() public view returns (string memory) {
+        if (balanceOf(msg.sender) < 1) revert Errors.NoFreeContentNFTOwned();
+        return lockedContent;
+    }
+
+    /**
     * @notice Function required to override by DefaultOperatorFilterer
     */
     function setApprovalForAll(address operator, bool approved) public override(ERC721, IERC721) onlyAllowedOperatorApproval(operator) {
@@ -176,8 +195,9 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     * @notice allows owner to withdraw funds from minting
     */
     function withdraw() public onlyOwner nonReentrant {
-        payable(owner()).transfer(address(this).balance);
 
+        (bool success, ) = payable(owner()).call{value: address(this).balance}('');
+        require(success,"Transfer failed!");
         emit WithdrawBalance(address(this).balance);
     }
 
@@ -188,8 +208,10 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     
     function withdrawERC20(address erc20TokenContract) public onlyOwner nonReentrant{
         IERC20 tokenContract = IERC20(erc20TokenContract);
-        tokenContract.transfer(msg.sender, tokenContract.balanceOf(address(this)));
+        //tokenContract.transfer(msg.sender, tokenContract.balanceOf(address(this)));
 
+        (bool success, ) = payable(owner()).call{value: tokenContract.balanceOf(address(this))}('');
+        require(success,"Transfer failed!");
         emit WithdrawERC20(address(this).balance);
     }
     

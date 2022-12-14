@@ -202,8 +202,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     * @notice allows owner to withdraw funds from minting
     */
     function withdraw() public onlyOwner nonReentrant {
-        payable(owner()).transfer(address(this).balance);
-
+        (bool success, ) = payable(owner()).call{value: address(this).balance}('');
+        require(success,"Transfer failed!");
         emit WithdrawBalance(address(this).balance);
     }
 
@@ -214,7 +214,10 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     
     function withdrawERC20(address erc20TokenContract) public onlyOwner nonReentrant {
         IERC20 tokenContract = IERC20(erc20TokenContract);
-        tokenContract.transfer(msg.sender, tokenContract.balanceOf(address(this)));
+        //tokenContract.transfer(msg.sender, tokenContract.balanceOf(address(this)));
+
+        (bool success, ) = payable(owner()).call{value: tokenContract.balanceOf(address(this))}('');
+        require(success,"Transfer failed!");
 
         emit WithdrawERC20(address(this).balance);
     }

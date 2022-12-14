@@ -17,4 +17,5 @@ library Errors {
     error RatKingHasAlreadyMintedFreeNFT();
     error AlreadyMintedFreeNFT();
     error NotYourRatKing();
+    error NoFreeContentNFTOwned();
 }
