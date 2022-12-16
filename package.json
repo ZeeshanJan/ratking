@@ -11,7 +11,8 @@
     "hardhat:test": "npx hardhat test",
     "hardhat:test:all": "RUN_STRESS_TESTS='true' npx hardhat test",
     "hardhat:coverage": "RUN_STRESS_TESTS='true' npx hardhat coverage",
-    "hardhat:test:report": "RUN_STRESS_TESTS='true' npx hardhat test --reporter mochawesome"
+    "hardhat:test:report": "RUN_STRESS_TESTS='true' npx hardhat test --reporter mochawesome",
+    "hardhat:deploy:all": "hardhat run --network localhost scripts/deploy_all.ts"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.5",
