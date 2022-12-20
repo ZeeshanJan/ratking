@@ -87,7 +87,7 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
     /**
     * @notice Minting of the RatKing NFTs
     */
-    function mintRatKing() public {
+    function mintRatKing() public whenNotPaused {
         //require(minterList[msg.sender] == false, Errors.RatKingAlreadyMinted());
         if (minterList[msg.sender] == true) revert Errors.RatKingAlreadyMinted();
         //require(_publicMintCounter.current() < MAX_PUBLIC_SUPPLY, "Public Mint Limit reached" );
