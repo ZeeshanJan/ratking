@@ -94,7 +94,7 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     * @param ratKing is the ID of RatKingSociety NFT.
     * The function checks if the msg.sender owns that RatKing, and if that RatKing has already been used to mint FabNovel NFT.
     */
-    function mintFabNovel(uint256 ratKing) public {
+    function mintFabNovel(uint256 ratKing) public whenNotPaused {
         if(_tokenIdCounter.current() >= MAX_FAB_NOVEL_SUPPLY) revert Errors.MaximumPublicSupplyLimitReached();
 
         if(ratKingMinterList[ratKing] == true) revert Errors.RatKingHasAlreadyMintedFreeNFT();
