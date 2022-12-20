@@ -17,7 +17,7 @@ import { Errors } from './Errors.sol';
 * @notice This contract manages the RatKing NFTs.
 */
 
-/// @custom:security-contact info@ratking.io
+/// @custom:security-contact ratking@mailfence.com
 contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
     using Counters for Counters.Counter;
 

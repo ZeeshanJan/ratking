@@ -14,31 +14,31 @@ import { Errors } from './Errors.sol';
 import "./RatKingSociety.sol";
 
 /**
-* @title FabNovel (Free Content by RatKingSociety)
-* @author Zeeshan Jan
-* @notice This contract manages the FabNovel NFTs.
+* @title NightoftheLivingDead (Free Content by RatKingSociety)
+* @author Zeeshan Jan 
+* @notice This contract manages the NightoftheLivingDead Movie NFTs.
 */
 
 /// @custom:security-contact ratking@mailfence.com
-contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
+contract NightoftheLivingDead is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuard, DefaultOperatorFilterer {
     using Counters for Counters.Counter;
 
     /// Counter for Tokens
     Counters.Counter private _tokenIdCounter;
     
-    /// Mappings for RatKing NFTs to trace which RatKing ID has been used to mint FabNovel NFT.
+    /// Mappings for RatKing NFTs to trace which RatKing ID has been used to mint NightoftheLivingDead NFT.
     mapping(uint256 => bool) ratKingMinterList;
 
-    /// Maximum Supply of Fab Novel NFTs
-    uint256 MAX_FAB_NOVEL_SUPPLY = 100; 
+    /// Maximum Supply of NightoftheLivingDead NFTs
+    uint256 MAX_MOVIE_SUPPLY = 100; 
 
-    /// Base URI (IPFS) for Fab Novel NFTs
+    /// Base URI (IPFS) for NightoftheLivingDead NFTs
     string private _baseURIextended;
 
     /// For Unlocked Content
     string private lockedContent;
 
-    event FabNovelMinted();
+    event NightOfTheLivingDeadMinted();
     event WithdrawBalance(uint256 balance);
     event WithdrawERC20(uint256 balance);
 
@@ -48,19 +48,19 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     /// Address of the RatKingSociety Smart Contract
     address ratKingAddress;
 
-    constructor() ERC721("FabNovel", "FabNovel") {
+    constructor() ERC721("NightOfTheLivingDead", "NightoftheLivingDead") {
     }
 
     /**
-    * @notice Sets the (IPFS) URL of FabNovel NFTs
-    * @param baseURI_ is the (IPFS) URL for FabNovel NFTs
+    * @notice Sets the (IPFS) URL of NightoftheLivingDead NFTs
+    * @param baseURI_ is the (IPFS) URL for NightoftheLivingDead NFTs
     */
     function setBaseURI(string memory baseURI_) external onlyOwner() {
         _baseURIextended = baseURI_;
     }
 
     /**
-    * @notice Gets the (IPFS) URI of FabNovel NFTs
+    * @notice Gets the (IPFS) URI of NightoftheLivingDead NFTs
     */
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseURIextended;
@@ -90,12 +90,12 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     }
 
     /**
-    * @notice Minting of the FabNovel NFTs
+    * @notice Minting of the NightoftheLivingDead NFTs
     * @param ratKing is the ID of RatKingSociety NFT.
-    * The function checks if the msg.sender owns that RatKing, and if that RatKing has already been used to mint FabNovel NFT.
+    * The function checks if the msg.sender owns that RatKing, and if that RatKing has already been used to mint NightoftheLivingDead NFT.
     */
-    function mintFabNovel(uint256 ratKing) public whenNotPaused {
-        if(_tokenIdCounter.current() >= MAX_FAB_NOVEL_SUPPLY) revert Errors.MaximumPublicSupplyLimitReached();
+    function mintNightOfTheLivingDead(uint256 ratKing) public whenNotPaused {
+        if(_tokenIdCounter.current() >= MAX_MOVIE_SUPPLY) revert Errors.MaximumPublicSupplyLimitReached();
 
         if(ratKingMinterList[ratKing] == true) revert Errors.RatKingHasAlreadyMintedFreeNFT();
 
@@ -106,10 +106,10 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     }
 
     /**
-    * @notice Checks if a RatKing ID has been used to mint FabNovel
+    * @notice Checks if a RatKing ID has been used to mint NightoftheLivingDead
     * @param ratKing is the ID of RatKing
     */
-    function checkFabMinted(uint256 ratKing) public view returns (bool) {
+    function checkNightOfTheLivingDeadMinted(uint256 ratKing) public view returns (bool) {
         return ratKingMinterList[ratKing];
     }
 
@@ -117,7 +117,7 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-        emit FabNovelMinted();
+        emit NightOfTheLivingDeadMinted();
     }
 
     /**
