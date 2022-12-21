@@ -16,7 +16,7 @@ import "./RatKingSociety.sol";
 /**
 * @title SingAppy (Free Content by RatKingSociety)
 * @author Zeeshan Jan
-* @notice This contract manages the SingAppy NFTs.
+* @notice This contract manages the SingAppy NFTs by https://ratkingsociety.com/
 */
 
 /// @custom:security-contact ratking@mailfence.com

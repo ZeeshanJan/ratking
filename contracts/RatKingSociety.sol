@@ -14,7 +14,7 @@ import { Errors } from './Errors.sol';
 /**
 * @title RatKingSociety (InfinityPass)
 * @author Zeeshan Jan
-* @notice This contract manages the RatKing NFTs.
+* @notice This contract manages the RatKing NFTs by https://ratkingsociety.com/
 */
 
 /// @custom:security-contact ratking@mailfence.com
