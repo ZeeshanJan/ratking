@@ -49,6 +49,8 @@ contract SingAppy is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     address ratKingAddress;
 
     constructor() ERC721("SingAppy", "SingAppy") {
+
+        _baseURIextended = "ipfs://bafybeibuwhqgygksvykxot7ridtbcyy2fbawnbtn6trjsfzsfrfpyw4xma/";
     }
 
     /**

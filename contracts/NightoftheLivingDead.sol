@@ -49,6 +49,8 @@ contract NightoftheLivingDead is ERC721, ERC721Enumerable, Pausable, Ownable, Re
     address ratKingAddress;
 
     constructor() ERC721("NightOfTheLivingDead", "NightoftheLivingDead") {
+
+        _baseURIextended = "ipfs://bafybeih575cfgsiso2spzbgmudqtlxht3lxiyiazz4wpym2wcqsypjwabu/";
     }
 
     /**

@@ -53,6 +53,8 @@ contract RatKingSociety is ERC721, ERC721Enumerable, Pausable, Ownable, Reentran
 
     constructor() ERC721("RatKing", "RatKing") {
 
+        _baseURIextended = "ipfs://bafybeifibgdydklbkw6odo3lmq6oaxhxx3lda6aaexeywkg327y3ozpnwq/";
+
     }
 
     /**

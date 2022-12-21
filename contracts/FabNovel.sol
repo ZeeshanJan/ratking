@@ -49,6 +49,8 @@ contract FabNovel is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     address ratKingAddress;
 
     constructor() ERC721("FabNovel", "FabNovel") {
+
+        _baseURIextended = "ipfs://bafybeidv7hozl3wvsyapsfsagd2fpo7i7titae7dfzch423tqpgcokv2ka/";
     }
 
     /**
