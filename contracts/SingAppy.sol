@@ -30,7 +30,7 @@ contract SingAppy is ERC721, ERC721Enumerable, Pausable, Ownable, ReentrancyGuar
     mapping(uint256 => bool) ratKingMinterList;
 
     /// Maximum Supply of SingAppy NFTs
-    uint256 MAX_SING_APPY_SUPPLY = 100; 
+    uint256 MAX_SING_APPY_SUPPLY = 275; 
 
     /// Base URI (IPFS) for SingAppy NFTs
     string private _baseURIextended;

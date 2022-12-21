@@ -30,7 +30,7 @@ contract NightoftheLivingDead is ERC721, ERC721Enumerable, Pausable, Ownable, Re
     mapping(uint256 => bool) ratKingMinterList;
 
     /// Maximum Supply of NightoftheLivingDead NFTs
-    uint256 MAX_MOVIE_SUPPLY = 100; 
+    uint256 MAX_MOVIE_SUPPLY = 200; 
 
     /// Base URI (IPFS) for NightoftheLivingDead NFTs
     string private _baseURIextended;
